@@ -5,10 +5,12 @@
 // Segment Tree
 class NumArray {
 private:
+
+    // tree[1] --> root of the SEGMENT TREE
     vector<int> tree;
     int n;
 public:
-    // Bottom-up
+    // Bottom-up building tree
     NumArray(vector<int> &nums) {
         n = nums.size();
         tree = vector<int> (2*n);
@@ -59,7 +61,7 @@ private:
     vector<int> _nums;
     vector<int> bit;
 
-    int lower_bit(int i){
+    inline int lower_bit(int i){
         return i&-i;
     }
 
