@@ -2,6 +2,7 @@ class Solution {
 private:
     unordered_map<char, unordered_set<char>> graph;
 
+
     // outer loop
     string toposort() {
         unordered_set<char> visited, onpath;
@@ -17,12 +18,11 @@ private:
 
     // inner dfs
     bool dfs(unordered_set<char>& visited, unordered_set<char>& onpath, string& order, char key) {
-        if(onpath.count(key)) return false;
         if(visited.count(key)) return true;
         visited.insert(key);
         onpath.insert(key);
         for(auto itr = graph[key].begin(); itr != graph[key].end(); ++itr) {
-            if(dfs(visited, onpath, order, *itr) == false) { // check cyclic
+            if(onpath.count(*itr) || dfs(visited, onpath, order, *itr) == false) { // check cyclic
                 return false;
             }
         }
@@ -36,20 +36,14 @@ public:
         if(words.size() == 1) return words[0];
         for(int i = 1; i < words.size(); ++i) {
             string word1 = words[i-1], word2 = words[i];
-
-            // a flag avoding constructing cyclic graph.
-            // Considering ["za", "zb", "ca", "cb"].  b->a, a->b, which is cyclic
-            bool find = false;
-
-            // make sure the second word cannot be the prefix of the first word.
+            bool found = false;
             if(word1.length() > word2.length() && word1.find(word2) == 0) return "";
-
             for(int j = 0; j < max(word1.length(), word2.length()); ++j) {
                 if(j<word1.length() && graph.count(word1[j]) == 0) graph[word1[j]];
                 if(j<word2.length() && graph.count(word2[j]) == 0) graph[word2[j]];
-                if(j < word1.length() && j < word2.length() && word1[j] != word2[j] && !find) {
+                if(j < word1.length() && j < word2.length() && word1[j] != word2[j] && !found) {
                     graph[word1[j]].insert(word2[j]);
-                    find = true;
+                    found = true;
                 }
             }
         }
